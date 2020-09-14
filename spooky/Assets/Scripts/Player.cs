@@ -7,6 +7,9 @@ public class Player : MonoBehaviour
     public GameObject camera;
     public GameObject bulletSpawnPoint;
     public float waitTime = 0.0f;
+    public GameObject playerObj;
+    public GameObject bullet;
+    public float points = 0;
 
 
     // methods
@@ -22,14 +25,27 @@ public class Player : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(targetPoint - transform.position);
             targetRotation.x = 0;
             targetRotation.z = 0;
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 7f * Time.deltaTime);
+            playerObj.transform.rotation = Quaternion.Slerp(playerObj.transform.rotation, targetRotation, 7f * Time.deltaTime);
         }
 
         // move forwards
         if (Input.GetKey(KeyCode.W)) {
             transform.Translate(Vector3.forward * movementSpeed * Time.deltaTime);
         }
+        if (Input.GetKey(KeyCode.A))
+        {
+            transform.Translate(Vector3.left * movementSpeed * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            transform.Translate(Vector3.right * movementSpeed * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            transform.Translate(Vector3.back * movementSpeed * Time.deltaTime);
+        }
 
+        // shoot
         if (Input.GetMouseButtonDown(0))
         {
             Shoot();
@@ -39,5 +55,6 @@ public class Player : MonoBehaviour
     void Shoot()
     {
         Debug.Log("Shoot!");
+        Instantiate(bullet.transform, bulletSpawnPoint.transform.position, bulletSpawnPoint.transform.rotation);
     }
 }

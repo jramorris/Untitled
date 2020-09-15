@@ -4,11 +4,17 @@ public class Enemy : MonoBehaviour
 {
     // variables
     public float health = 100f;
+    public float torque;
+
+    // RE player
     public GameObject player;
     public float pointsToGive = 50f;
+    public float maxPlayerDistance = 5f;
+    bool seen = false;
+
+    // shooting
     public GameObject bullet;
     public GameObject bulletSpawnPoint;
-
     public float waitTime;
     private float currentTime;
 
@@ -25,21 +31,25 @@ public class Enemy : MonoBehaviour
             Die();
         }
 
-        this.transform.LookAt(player.transform);
-
-        if (currentTime >= waitTime)
+        // look at & shoot if close enough
+        float playerDist = Vector3.Distance(player.transform.position, transform.position);
+        if (playerDist <= maxPlayerDistance)
         {
-            Shoot();
-            currentTime = 0;
-        } else
-        {
-            currentTime += Time.deltaTime;
+            this.transform.GetChild(0).transform.LookAt(player.transform);
+            if (currentTime >= waitTime)
+            {
+                Shoot();
+                currentTime = 0;
+            }
+            else
+            {
+                currentTime += Time.deltaTime;
+            }
         }
     }
 
     public void Die()
     {
-        Debug.Log(this.gameObject.name + "Died");
         Destroy(this.gameObject);
         player.GetComponent<Player>().points += pointsToGive;
     }
